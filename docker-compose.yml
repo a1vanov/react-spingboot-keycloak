@@ -1,0 +1,79 @@
+version: '3.9'
+services:
+  innrate-db:
+    container_name: "innrate-db"
+    image: innrate/innrate-db
+    build:
+      context: .
+      dockerfile: docker/db/innrate-db.Dockerfile
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - "3307:3306"
+    volumes:
+#      - ./data/db:/var/lib/mysql
+      - innrate-db:/var/lib/mysql
+    restart: always
+
+  innrate-keycloak:
+    container_name: "innrate-keycloak"
+    image: innrate/innrate-keycloak
+    build:
+      context: .
+      dockerfile: docker/keycloak/innrate-keycloak.Dockerfile
+#    depends_on:
+#      - innrate-db
+    environment:
+      - KC_DB=${KC_DB-mysql}
+      - KC_DB_URL=${KC_DB_URL-jdbc:mysql://innrate-db/keycloak}
+      - KC_DB_USERNAME=${KC_DB_USER-keycloak}
+      - KC_DB_PASSWORD=${KC_DB_PASSW-123456}
+      - KC_HTTP_PORT=8096
+      - KC_HTTPS_PORT=8098
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=123456
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: "start --import-realm --auto-build"
+    ports:
+      - "8096:8096"
+      - "8098:8098"
+    volumes:
+#      - ./data/keycloak:/tmp
+      - innrate-keycloak:/tmp
+    restart: on-failure
+
+  innrate-service:
+    container_name: "innrate-service"
+    image: innrate/innrate-service:latest
+    build:
+      context: .
+      dockerfile: docker/service/innrate-service.Dockerfile
+    depends_on:
+#      - innrate-db
+      - innrate-keycloak
+    environment:
+      - INNRATE_HTTPS_ENABLED=false
+      - INNRATE_DB_URL=${IR_DB_URL-jdbc:mysql://innrate-db/innrate}
+      - INNRATE_DB_USERNAME=${IR_DB_USER-innrate}
+      - INNRATE_DB_PASSWORD=${IR_DB_PASSW-123456}
+      - KEYCLOAK_AUTH_URL=http://innrate-keycloak:8096
+      - KEYCLOAK_CLIENT_SECRET=mDMnmWgf7aGqNMVApYSqjHcYVJswL3F3
+      - KEYCLOAK_SSL_REQUIRED=none
+      - SWAGGER_ENABLED=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8090:8090"
+      - "5005:5005"
+    restart: on-failure
+
+networks:
+  default:
+    name: innrate
+
+volumes:
+  innrate-db:
+    name: innrate-db
+  innrate-keycloak:
+    name: innrate-keycloak

@@ -1,0 +1,45 @@
+{
+  "properties": [
+    {
+      "name": "innrate.frontend-path-prefix",
+      "type": "java.lang.String",
+      "description": "Innrate frontend path prefix."
+    },
+    {
+      "name": "innrate.backend-path-prefix",
+      "type": "java.lang.String",
+      "description": "Innrate backend path prefix."
+    },
+
+    {
+      "name": "innrate.connectors.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables connector."
+    },
+    {
+      "name": "innrate.connectors.port",
+      "type": "java.lang.Integer",
+      "description": "Connector port."
+    },
+
+    {
+      "name": "innrate.connectors.ssl.key-store",
+      "type": "java.lang.String",
+      "description": "KeyStore file."
+    },
+    {
+      "name": "innrate.connectors.ssl.key-store-type",
+      "type": "java.lang.String",
+      "description": "KeyStore file type."
+    },
+    {
+      "name": "innrate.connectors.ssl.key-store-password",
+      "type": "java.lang.String",
+      "description": "KeyStore password."
+    },
+    {
+      "name": "innrate.connectors.ssl.key-alias",
+      "type": "java.lang.String",
+      "description": "KeyStore key alias."
+    }
+  ] }

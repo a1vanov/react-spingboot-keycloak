@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  innrate-service:
+    image: innrate/innrate-service:latest
+    build:
+      context: ../../..
+      args:
+        DOCKER_JAVA_IMAGE: ${DOCKER_JAVA_IMAGE}
+        PROJECT_ARTEFACT_ID: ${PROJECT_ARTEFACT_ID}
+        PROJECT_VERSION: ${PROJECT_VERSION}
+      dockerfile: src/main/docker/service/innrate-service.Dockerfile

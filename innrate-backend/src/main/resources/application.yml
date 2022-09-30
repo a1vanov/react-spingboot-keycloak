@@ -1,0 +1,113 @@
+#  IEEE Std 1003.1-2001 (POSIX):
+#  Environment variable names consist solely of uppercase letters, digits, and the '_' (underscore)
+#  from the characters defined in Portable Character Set and do not begin with a digit.
+#  Other characters may be permitted by an implementation;
+innrate:
+  # "/innrate" prefix has added for proxy rules
+  frontend-path-prefix: /innrate
+  backend-path-prefix: /innrate/api
+
+keycloak:
+  enabled: ${KEYCLOAK_ENABLED:true}
+
+  auth-server-url: ${KEYCLOAK_AUTH_URL:https://localhost:8098}
+  realm: ${KEYCLOAK_REALM:Innrate}
+  resource: ${KEYCLOAK_CLIENT:innrate-service}
+  credentials.secret: ${KEYCLOAK_CLIENT_SECRET:service_client_secret}
+
+  principal-attribute: preferred_username
+
+  # external - will redirect on https from both http and https excepting local addresses
+  ssl-required: ${KEYCLOAK_SSL_REQUIRED:external}
+  disable-trust-manager: ${KEYCLOAK_DISABLE_TRUST_MANAGER:true}
+  #  truststore: ${KEYCLOAK_TRUSTSTORE:truststore.jks}
+  #  truststore-password: ${KEYCLOAK_TRUSTSTORE_PASSWORD:123456}
+
+  security-constraints:
+    - authRoles: ${KEYCLOAK_ROLES:innrate-user,dummy}
+      securityCollections:
+        - name: Innrate Private Data
+          patterns: [ '/innrate/index.html', '/innrate/static/*', '/innrate/api/*' ]
+
+logging:
+  level:
+    ru.gpn.asodu: INFO
+    org.springframework.security: INFO
+
+server:
+  connectors:
+    - enabled: ${INNRATE_HTTP_ENABLED:true}
+      port: ${INNRATE_HTTP_PORT:8090}
+
+    - enabled: ${INNRATE_HTTPS_ENABLED:true}
+      port: ${INNRATE_HTTPS_PORT:8092}
+      ssl:
+        key-store: ${INNRATE_KEY_STORE:keystore.jks}
+        key-store-type: ${INNRATE_KEY_STORE_TYPE:JKS}
+        key-store-password: ${INNRATE_KEY_STORE_PASSWORD:123456}
+        key-alias: ${INNRATE_KEY_STORE_ALIAS:InnRate}
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: org.postgresql.Driver
+    url: ${INNRATE_DB_URL:url}
+    username: ${INNRATE_DB_USERNAME:username}
+    password: ${INNRATE_DB_PASSWORD:password}
+  jpa:
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          time_zone: UTC
+  #        stringtype: unspecified
+  liquibase:
+    enabled: true
+    change-log: classpath:database/migration/changelog.master.xml
+    contexts: "!test"
+
+  main:
+    banner-mode: OFF
+  mvc:
+    throw-exception-if-no-handler-found: true
+  security:
+    oauth2:
+      client:
+        provider:
+          spektr:
+            token-uri: token-uri
+        registration:
+          spektr:
+            authorization-grant-type: client_credentials
+            client-id: client-id
+            client-secret: client-secret
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 25MB
+      max-request-size: 25MB
+  web:
+    resources:
+      add-mappings: false # add default static mappings
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+    path: /swagger.html
+    showCommonExtensions: true
+    oauth:
+      appName: InnRate service
+      realm: ${KEYCLOAK_REALM:Innrate}
+      clientId: ${KEYCLOAK_CLIENT:innrate-service}
+      clientSecret: ${KEYCLOAK_CLIENT_SECRET:some_client_secret}
+      scopes: [ openid,email,roles ]
+
+    urls:
+      - name: InnRate API
+        url: /api-docs

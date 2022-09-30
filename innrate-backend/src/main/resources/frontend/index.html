@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome page</title>
+    <link rel="stylesheet" href="./index.css">
+
+    <script>
+        function getCookie(cookieName) {
+            let cookie = {};
+            document.cookie.split(';').forEach(function (el) {
+                let [key, value] = el.split('=');
+                cookie[key.trim()] = value;
+            })
+            return cookie[cookieName];
+        }
+    </script>
+</head>
+<body>
+<div class="page">
+    <div class="container">
+        <h4 class="title">InnRate welcome page</h4>
+        <p class="text">If you see this page it means the frontend module has not been added into the service. </p>
+        <form action="/innrate/api/logout" method="POST">
+            <input
+                    type="hidden"
+                    name="_csrf"
+                    value="javascript:getCookie('XSRF-TOKEN')"
+            />
+            <input
+                    class="button"
+                    type="submit"
+                    value="Выйти"
+            />
+        </form>
+    </div>
+</div>
+</body>
+</html>

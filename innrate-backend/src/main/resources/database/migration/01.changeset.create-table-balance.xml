@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1 Add balance fluid table" author="AI">
+        <createTable tableName="balance_fluid">
+            <column name="id" type="UUID" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp"/>
+            <column name="updated_date" type="timestamp"/>
+            <column name="dt_to" type="timestamp"/>
+            <column name="field_id" type="varchar(8)"/>
+            <column name="tm_sum" type="double precision"/>
+            <column name="vm_sum" type="double precision"/>
+            <column name="zm_sum" type="double precision"/>
+            <column name="usoi_sum" type="double precision"/>
+            <column name="usoi_forecast_agg" type="double precision"/>
+            <column name="imbalance" type="double precision"/>
+            <column name="prod_fact_mean" type="double precision"/>
+            <column name="prod_fact_forecast" type="double precision"/>
+            <column name="sync_date" type="timestamp"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
