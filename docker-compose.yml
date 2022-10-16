@@ -43,6 +43,12 @@ services:
       - innrate-keycloak:/tmp
     restart: on-failure
 
+  innrate-maven:
+    image: innrate/innrate-maven:latest
+    build:
+      context: .
+      dockerfile: docker/maven/innrate-maven.Dockerfile
+
   innrate-service:
     container_name: "innrate-service"
     image: innrate/innrate-service:latest

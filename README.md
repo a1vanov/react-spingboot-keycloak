@@ -63,3 +63,5 @@ a: Sometimes if the update application is abruptly stopped, then the lock remain
 execute
 UPDATE DATABASECHANGELOGLOCK SET LOCKED=0, LOCKGRANTED=null, LOCKEDBY=null where ID=1;
 
+# Docs
+https://sequencediagram.org/

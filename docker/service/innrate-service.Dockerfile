@@ -1,5 +1,5 @@
 
-FROM maven:3.8.6 as innrate-agent
+FROM innrate/innrate-maven as innrate-agent
 ARG PROJECT_NAME=innrate-backend
 
 COPY . /opt/innrate
@@ -9,7 +9,7 @@ WORKDIR /opt/innrate
 RUN export TZ=Europe\Moscow && \
     export LANG=ru_RU.utf8 && \
 #    export LANG=en_US.utf8 && \
-    mvn -ntp verify
+    mvn verify
 
 RUN PROJECT_VERSION="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" && \
     mkdir innrate-backend/target/docker && \
